@@ -15,14 +15,24 @@ def last_status(pl, segment_info):
 
 
 @requires_segment_info
-def last_pipe_status(pl, segment_info):
+def last_pipe_status(pl, segment_info, ok=None, bad=None):
 	'''Return last pipe status.
 
 	Highlight groups used: ``exit_fail``, ``exit_success``
 	'''
 	last_pipe_status = segment_info['args'].last_pipe_status
 	if any(last_pipe_status):
-		return [{'contents': str(status), 'highlight_group': 'exit_fail' if status else 'exit_success', 'draw_inner_divider': True}
-			for status in last_pipe_status]
+		if bad:
+			return [{'contents': bad, 'highlight_group': 'exit_fail',
+					 'draw_inner_divider': True}]
+		else:
+			return [
+				{'contents': str(status), 'highlight_group': 'exit_fail' if
+					status else 'exit_success', 'draw_inner_divider': True}
+				for status in last_pipe_status]
 	else:
-		return None
+		if ok:
+			return [{'contents': ok, 'highlight_group': 'exit_success',
+					'draw_inner_divider': True}]
+		else:
+			return None
