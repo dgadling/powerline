@@ -33,7 +33,7 @@ def environment(pl, segment_info, variable=None):
 
 
 @requires_segment_info
-def hostname(pl, segment_info, only_if_ssh=False, exclude_domain=False):
+def hostname(pl, segment_info, only_if_ssh=False, exclude_domain=False, ndots=None):
 	'''Return the current hostname.
 
 	:param bool only_if_ssh:
@@ -43,6 +43,8 @@ def hostname(pl, segment_info, only_if_ssh=False, exclude_domain=False):
 	'''
 	if only_if_ssh and not segment_info['environ'].get('SSH_CLIENT'):
 		return None
+	if ndots:
+		return '.'.join(socket.gethostname().split('.')[:ndots])
 	if exclude_domain:
 		return socket.gethostname().split('.')[0]
 	return socket.gethostname()
